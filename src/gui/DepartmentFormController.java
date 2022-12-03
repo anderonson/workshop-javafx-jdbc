@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import db.DbException;
-import gui.listeners.DataChangedListener;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -29,7 +29,7 @@ public class DepartmentFormController implements Initializable {
 	
 	private DepartmentService service;
 	
-	private List<DataChangedListener> dataChangedListeners = new ArrayList<>();
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
@@ -54,8 +54,8 @@ public class DepartmentFormController implements Initializable {
 		this.service = service;
 	}
 	
-	public void subscribeDataChangedListener(DataChangedListener listener) {
-		dataChangedListeners.add(listener);
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
 	}
 	
 	@FXML
@@ -69,7 +69,7 @@ public class DepartmentFormController implements Initializable {
 		try {
 		entity = getFormData();
 		service.saveOrUpdate(entity);
-		notifyDataChangedListeners();
+		notifyDataChangeListeners();
 		Utils.currentStage(event).close();
 		}
 		catch (ValidationException e) {
@@ -80,8 +80,8 @@ public class DepartmentFormController implements Initializable {
 		}
 	}
 
-	private void notifyDataChangedListeners() {
-		for (DataChangedListener listener : dataChangedListeners) {
+	private void notifyDataChangeListeners() {
+		for (DataChangeListener listener : dataChangeListeners) {
 			listener.onDataChanged();
 		}
 		
@@ -90,7 +90,7 @@ public class DepartmentFormController implements Initializable {
 	private Department getFormData() {
 		Department obj = new Department();
 		
-		ValidationException exception = new ValidationException("Validation errors");
+		ValidationException exception = new ValidationException("Validation error");
 		
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
 		
